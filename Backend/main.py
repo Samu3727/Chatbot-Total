@@ -2,12 +2,21 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from routes.chat_routes import router as chat_router
 from routes.health_routes import router as health_router
+from fastapi.middleware.cors import CORSMiddleware
 from config import settings
 
 app = FastAPI(
     title="OpenRouter Chatbot API",
     description="API de Chatbot multi-modelo usando OpenRouter",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.get("/", include_in_schema=False)
