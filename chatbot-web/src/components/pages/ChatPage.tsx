@@ -15,7 +15,7 @@ const ChatPage = () => {
     if (!message.trim()) return;
 
     const userMessage: Message = {
-      id: crypto.randomUUID(),
+      id: usuario_id,
       text: message,
       sender: 'user'
     };
@@ -25,16 +25,16 @@ const ChatPage = () => {
 
     try {
       const response = await sendQuestion({
-        usuario_id,
-        pregunta: userMessage.text
+        // session_id: userMessage.id,
+        message: userMessage.text
       });
 
       const botMessage: Message = {
         id: crypto.randomUUID(),
-        text: response.respuesta,
+        text: response.response,
         sender: 'bot'
       };
-
+      console.log(botMessage);
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       setMessages(prev => [

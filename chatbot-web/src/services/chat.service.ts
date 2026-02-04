@@ -1,18 +1,17 @@
 import { http } from "../apis/http";
 
 interface MessageUser {
-    usuario_id: string
-    pregunta: string
+    // session_id: string,
+    message: string
 }
 
 interface ChatApiResponse {
-    usuario_id: string;
-    remitente: 'bot';
-    respuesta: string;
+    response: string;
+    status: string;
 }
 
 export const sendQuestion = async (message: MessageUser) => {
-    const {data} = await http.post<ChatApiResponse>("/chatBot", message)
+    const {data} = await http.post<ChatApiResponse>("/api/v1/chat", message)
 
     return data;
 }
