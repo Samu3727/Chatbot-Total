@@ -1,0 +1,21 @@
+# Entorno Virtual
+.venv/
+venv/
+env/
+ENV/
+
+# Secretos
+.env
+
+# Python (Archivos temporales)
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# VS Code / Editores
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
