@@ -1,34 +1,36 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
-import { AxiosChatService } from '../services/AxiosChatService';
-import { useChat } from '../hooks/useChat';
-import { ChatInput } from '../components/ChatInput';
-import { ChatMessages } from '../components/ChatMessages';
+import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import { AxiosChatService } from '../services';
+import { useChat } from '../hooks';
+import { MessageList, ChatInput } from '../components';
 
+/**
+ * Pantalla principal del chat.
+ * Implementa Composición: usa componentes más pequeños.
+ * Implementa Dependency Inversion: usa el hook con el servicio inyectado.
+ */
 export default function ChatScreen() {
+  // Crear instancia del servicio (podría venir de un contexto)
+  const chatService = new AxiosChatService();
 
-    const chatService = new AxiosChatService();
+  // Usar el hook personalizado
+  const { messages, isLoading, sendMessage } = useChat(chatService);
 
-    const { messages, isLoading, sendMessage } = useChat(chatService);
-
-    return (
-
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-        >
-            <ChatMessages messages={messages} isLoading={isLoading} />
-            <ChatInput onSend={sendMessage} isLoading={isLoading} />
-        </KeyboardAvoidingView>
-    );
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+    >
+      <MessageList messages={messages} />
+      <ChatInput onSend={sendMessage} isLoading={isLoading} />
+    </KeyboardAvoidingView>
+  );
 }
 
 const styles = StyleSheet.create({
-
-    container: {
-
-        flex: 1,
-        backgroundColor: '#f5f5f5'
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
 });
