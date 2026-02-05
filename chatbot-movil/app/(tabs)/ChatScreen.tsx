@@ -1,8 +1,9 @@
 import React from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
-import { AxiosChatService } from '../services';
 import { useChat } from '../hooks';
-import { MessageList, ChatInput } from '../components';
+import { MessageList } from '../components/MessageList';
+import { ChatInput } from '../components/ChatInput';
+import { AxiosChatService } from '../services/AxiosChatService';
 
 /**
  * Pantalla principal del chat.
