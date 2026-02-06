@@ -4,11 +4,11 @@ from services import ChatService, ProviderFactory, AIProvider
 
 router = APIRouter(tags=["Chat"])
 
-def get_ai_provider() -> AIProvider:
-    return ProviderFactory.get_provider("openrouter")
+provider: AIProvider = ProviderFactory.get_provider("openrouter")
+chat_service = ChatService(provider=provider)
 
-def get_chat_service(provider: AIProvider = Depends(get_ai_provider)) -> ChatService:
-    return ChatService(provider=provider)
+def get_chat_service() -> ChatService:
+    return chat_service
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(
@@ -16,10 +16,13 @@ async def chat_endpoint(
     service: ChatService = Depends(get_chat_service)
 ):
     try:
-        reply = await service.process_chat(request.message)
+        reply = await service.process_chat(
+            request.conversation_id,
+            request.message
+        )
         return ChatResponse(response=reply)
     except Exception as e:
         raise HTTPException(
             status_code=500, 
-            detail="Error interno al procesar la solicitud de chat."
+            detail=str(e)
         )
