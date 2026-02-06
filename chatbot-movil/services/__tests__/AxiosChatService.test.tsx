@@ -61,7 +61,11 @@ describe('AxiosChatService', () => {
   });
 
   it('debe manejar errores de red', async () => {
-    const networkError = new Error('Network Error');
+    const networkError = {
+      isAxiosError: true,
+      request: {},
+      message: 'Network Error',
+    };
     mockedAxios.post.mockRejectedValue(networkError);
 
     await expect(service.sendMessage('Hola', 'user123')).rejects.toThrow(
@@ -71,6 +75,7 @@ describe('AxiosChatService', () => {
 
   it('debe manejar timeout', async () => {
     const timeoutError = {
+      isAxiosError: true,
       code: 'ECONNABORTED',
       message: 'timeout of 5000ms exceeded',
     };

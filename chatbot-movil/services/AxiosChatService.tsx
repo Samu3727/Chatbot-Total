@@ -54,10 +54,20 @@ export class AxiosChatService implements IChatService {
 
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError;
+        
+        // Error de respuesta HTTP (4xx, 5xx)
         if (axiosError.response) {
-          throw new Error(`Error del servidor: ${axiosError.response.status}`);
-        } else if (axiosError.request) {
-          throw new Error('No se pudo conectar al servidor');
+          throw new Error(`Error del servidor (${axiosError.response.status})`);
+        }
+        
+        // Error de timeout
+        if (axiosError.code === 'ECONNABORTED') {
+          throw new Error('La solicitud tardó demasiado tiempo. Intenta de nuevo.');
+        }
+        
+        // Error de red (sin respuesta)
+        if (axiosError.request) {
+          throw new Error('No se pudo conectar con el servidor');
         }
       }
 
