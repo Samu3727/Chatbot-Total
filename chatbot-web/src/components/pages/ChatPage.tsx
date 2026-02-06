@@ -25,7 +25,7 @@ const ChatPage = () => {
 
     try {
       const response = await sendQuestion({
-        // session_id: userMessage.id,
+        conversation_id: userMessage.id,
         message: userMessage.text
       });
 

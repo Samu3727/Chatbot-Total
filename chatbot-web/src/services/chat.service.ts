@@ -1,7 +1,7 @@
 import { http } from "../apis/http";
 
 interface MessageUser {
-    // session_id: string,
+    conversation_id: string,
     message: string
 }
 
