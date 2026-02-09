@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-const API_URL = 'http://10.230.104.192:8000';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.9:8000';
 
 interface Message {
   id: string;
@@ -41,11 +41,11 @@ export default function ChatScreen() {
     setIsLoading(true);
 
     try {
-      console.log('Sending to:', `${API_URL}/chat`);
+      console.log('Sending to:', `${API_URL}/api/v1/chat`);
       console.log('Message:', messageToSend);
       
       const response = await axios.post(
-        `${API_URL}/chat`,
+        `${API_URL}/api/v1/chat`,
         {
           message: messageToSend,
           user_id: 'user123',

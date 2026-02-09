@@ -1,1 +1,3 @@
-export { default as ChatScreen } from './ChatScreen';
+import ChatScreen from './ChatScreen';
+
+export default ChatScreen;
