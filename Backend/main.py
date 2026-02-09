@@ -13,7 +13,12 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",  # Frontend Web
+        "http://localhost:8081",  # Expo Metro
+        "http://192.168.*.*:8081",  # Expo en red local
+        "*"  # Permitir todos los orígenes en desarrollo
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

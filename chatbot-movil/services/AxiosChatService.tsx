@@ -2,6 +2,9 @@ import axios, { AxiosError } from 'axios';
 import { IChatService } from './IChatService';
 import { ChatResponse } from '../models';
 
+// Obtener la URL del API desde las variables de entorno
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8000';
+
 /**
  * Implementación del servicio de chat usando Axios.
  * Implementa Open/Closed: se puede extender creando nuevas implementaciones
@@ -12,11 +15,11 @@ export class AxiosChatService implements IChatService {
   private timeout: number;
 
   /**
-   * @param apiUrl URL base del servidor (default: http://10.230.104.192:8000)
+   * @param apiUrl URL base del servidor (default: variable de entorno o http://localhost:8000)
    * @param timeout Timeout para las peticiones en ms (default: 30000)
    */
   constructor(
-    apiUrl: string = 'http://10.230.104.192:8000',
+    apiUrl: string = API_BASE_URL,
     timeout: number = 30000
   ) {
     this.apiUrl = apiUrl;
@@ -25,11 +28,11 @@ export class AxiosChatService implements IChatService {
 
   async sendMessage(message: string, userId: string = 'user123'): Promise<string> {
     try {
-      console.log(`[AxiosChatService] Enviando mensaje a: ${this.apiUrl}/chat`);
+      console.log(`[AxiosChatService] Enviando mensaje a: ${this.apiUrl}/api/v1/chat`);
       console.log(`[AxiosChatService] Mensaje: ${message}`);
 
       const response = await axios.post<ChatResponse>(
-        `${this.apiUrl}/chat`,
+        `${this.apiUrl}/api/v1/chat`,
         {
           message,
           user_id: userId,
