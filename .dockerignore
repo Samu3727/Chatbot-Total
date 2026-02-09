@@ -1,0 +1,54 @@
+# Archivos y directorios a ignorar en el contexto de Docker
+.git
+.gitignore
+.github
+.vscode
+.idea
+*.md
+!README.md
+!DOCKER.md
+!README.docker.md
+
+# Node modules
+**/node_modules
+**/npm-debug.log
+**/yarn.debug.log
+**/yarn-error.log
+
+# Python
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.Python
+**/*.so
+**/*.egg
+**/*.egg-info
+**/dist
+**/build
+**/.pytest_cache
+**/.coverage
+**/htmlcov/
+**/.mypy_cache
+
+# Entornos
+**/.env.local
+**/.env.*.local
+**/venv/
+**/ENV/
+**/.venv
+
+# Cobertura de tests
+**/coverage
+**/.nyc_output
+
+# Logs
+**/*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporal
+**/tmp
+**/temp

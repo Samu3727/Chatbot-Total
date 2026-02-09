@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # Backend API
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: chatbot-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-openrouter/auto}
+    env_file:
+      - ./Backend/.env
+    volumes:
+      - ./Backend:/app
+    restart: unless-stopped
+    networks:
+      - chatbot-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Web
+  frontend:
+    build:
+      context: ./chatbot-web
+      dockerfile: Dockerfile
+    container_name: chatbot-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - chatbot-network
+    environment:
+      - VITE_API_URL=http://localhost:8000
+
+  # Backend Móvil (opcional, si es diferente al backend principal)
+  backend-movil:
+    build:
+      context: ./Backend-Movil
+      dockerfile: Dockerfile
+    container_name: chatbot-backend-movil
+    ports:
+      - "8001:8000"
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-openrouter/auto}
+    volumes:
+      - ./Backend-Movil:/app
+    restart: unless-stopped
+    networks:
+      - chatbot-network
+    profiles:
+      - full
+
+networks:
+  chatbot-network:
+    driver: bridge
+
+volumes:
+  backend_data:

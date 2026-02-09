@@ -1,0 +1,80 @@
+version: '3.8'
+
+# Configuración optimizada para PRODUCCIÓN
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile.prod
+    container_name: chatbot-backend-prod
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - DEFAULT_MODEL=${DEFAULT_MODEL:-openrouter/auto}
+      - ENVIRONMENT=production
+    env_file:
+      - ./Backend/.env
+    restart: always
+    networks:
+      - chatbot-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    build:
+      context: ./chatbot-web
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    container_name: chatbot-frontend-prod
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: always
+    networks:
+      - chatbot-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Descomentar si usas SSL con certificados propios
+    # volumes:
+    #   - ./certs:/etc/nginx/certs:ro
+
+networks:
+  chatbot-network:
+    driver: bridge
+
+# Volúmenes para persistencia si se necesita
+volumes:
+  backend_data:

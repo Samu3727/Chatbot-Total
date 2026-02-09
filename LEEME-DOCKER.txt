@@ -1,0 +1,173 @@
+================================================================================
+  CHATBOT-TOTAL - GUIA RAPIDA DOCKER (TEXTO PLANO)
+================================================================================
+
+REQUISITOS:
+-----------
+1. Tener Docker Desktop instalado
+   Descargar de: https://www.docker.com/products/docker-desktop
+
+2. Verificar que Docker este corriendo
+   Abrir Docker Desktop antes de continuar
+
+
+PASOS PARA INICIAR:
+-------------------
+
+1. CONFIGURAR API KEY
+
+   Windows:
+   --------
+   cd Backend
+   copy .env.example .env
+   notepad .env
+   
+   Linux/Mac:
+   ----------
+   cd Backend
+   cp .env.example .env
+   nano .env
+   
+   Agregar tu API key:
+   OPENROUTER_API_KEY=tu_clave_aqui
+
+
+2. VERIFICAR SISTEMA (OPCIONAL)
+
+   PowerShell (Windows):
+   ---------------------
+   .\verify-docker.bat
+   
+   CMD (Windows):
+   --------------
+   verify-docker.bat
+   
+   Linux/Mac:
+   ----------
+   chmod +x verify-docker.sh
+   ./verify-docker.sh
+
+
+3. INICIAR PROYECTO
+
+   Opcion A - Script automatico (Recomendado):
+   --------------------------------------------
+   PowerShell:  .\start-docker.bat
+   CMD:         start-docker.bat
+   Linux/Mac:   ./start-docker.sh
+   
+   Opcion B - Manual:
+   ------------------
+   docker-compose build
+   docker-compose up -d
+
+
+4. ACCEDER A LAS APLICACIONES
+
+   - Aplicacion Web:    http://localhost
+   - API Backend:       http://localhost:8000
+   - Documentacion API: http://localhost:8000/docs
+
+
+COMANDOS UTILES:
+----------------
+
+Ver estado:
+  docker-compose ps
+
+Ver logs:
+  docker-compose logs -f
+
+Detener:
+  docker-compose down
+  (o ejecutar: .\stop-docker.bat en PowerShell / stop-docker.bat en CMD / ./stop-docker.sh en Linux/Mac)
+
+Reiniciar:
+  docker-compose restart
+
+Limpiar todo y empezar de cero:
+  docker-compose down -v
+  docker-compose build --no-cache
+  docker-compose up -d
+
+
+SOLUCIONAR PROBLEMAS:
+---------------------
+
+Problema: Puerto 80 ocupado
+Solucion: Cambiar en docker-compose.yml la linea "80:80" por "8080:80"
+          Luego acceder a http://localhost:8080
+
+Problema: Docker no inicia
+Solucion: Abrir Docker Desktop y esperar a que inicie completamente
+
+Problema: Backend no responde
+Solucion: Verificar que el archivo Backend/.env tenga tu API key correcta
+
+Problema: Los cambios no se ven
+Solucion: docker-compose restart
+
+
+DOCUMENTACION COMPLETA:
+------------------------
+
+Para mas informacion, ver estos archivos:
+
+- DOCKER-INDEX.md             - Indice de toda la documentacion
+- DOCKER-CHECKLIST.md         - Lista de pasos detallada
+- README.docker.md            - Guia rapida en Markdown
+- DOCKER.md                   - Documentacion completa
+- DOCKER-TROUBLESHOOTING.md   - Solucion de problemas
+- DOCKER-COMMANDS.md          - Referencia de comandos
+
+
+URLS DE ACCESO:
+---------------
+
+Frontend:               http://localhost
+Backend API:            http://localhost:8000
+Documentacion API:      http://localhost:8000/docs
+Backend Movil:          http://localhost:8001  (opcional)
+
+
+ESTRUCTURA DEL PROYECTO:
+-------------------------
+
+docker-compose.yml          <- Configuracion principal
+Backend/Dockerfile          <- Imagen del backend
+Backend/.env               <- Variables de entorno (CREAR ESTE!)
+chatbot-web/Dockerfile      <- Imagen del frontend
+start-docker.bat/.sh        <- Script de inicio
+
+
+NOTAS IMPORTANTES:
+------------------
+
+1. Docker Desktop DEBE estar corriendo antes de ejecutar comandos
+2. El archivo Backend/.env es OBLIGATORIO con tu API key
+3. Los cambios en codigo de Backend se reflejan automaticamente
+4. Los cambios en Frontend requieren: docker-compose restart frontend
+5. La primera construccion puede tomar 5-10 minutos
+
+
+AYUDA:
+------
+
+Si algo no funciona:
+
+1. Ver logs:        docker-compose logs -f
+2. Ver estado:      docker-compose ps  
+3. Reiniciar todo:  docker-compose restart
+4. Leer:            DOCKER-TROUBLESHOOTING.md
+
+
+SOPORTE:
+--------
+
+Para mas ayuda, consulta la documentacion completa en formato Markdown.
+Todos los archivos DOCKER-*.md contienen informacion detallada.
+
+
+================================================================================
+Ultima actualizacion: Febrero 2026
+================================================================================

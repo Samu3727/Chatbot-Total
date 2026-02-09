@@ -132,9 +132,77 @@ Si ves errores de CORS en la consola:
 | Frontend Web | http://localhost:5173 |
 | Frontend Móvil | Expo Go (variable) |
 
+## 🐳 Configuración con Docker (Recomendado)
+
+### ¿Por qué usar Docker?
+Docker permite ejecutar el proyecto en cualquier equipo sin problemas de dependencias, versiones de Python/Node, o configuración del entorno.
+
+### Inicio Rápido con Docker
+
+#### Opción 1: Script Automático (Más Fácil)
+
+**PowerShell (Windows):**
+```powershell
+.\verify-docker.bat    # Verificar que todo esté listo
+.\start-docker.bat     # Iniciar el proyecto
+.\stop-docker.bat      # Detener el proyecto
+```
+
+**CMD (Windows):**
+```cmd
+verify-docker.bat    # Verificar que todo esté listo
+start-docker.bat     # Iniciar el proyecto
+stop-docker.bat      # Detener el proyecto
+```
+
+**Linux/Mac:**
+```bash
+chmod +x *.sh
+./verify-docker.sh   # Verificar que todo esté listo
+./start-docker.sh    # Iniciar el proyecto
+./stop-docker.sh     # Detener el proyecto
+```
+
+#### Opción 2: Docker Compose Manual
+
+```bash
+# 1. Configurar variables de entorno
+cd Backend
+cp .env.example .env
+# Editar .env con tu OPENROUTER_API_KEY
+
+# 2. Construir imágenes
+docker-compose build
+
+# 3. Iniciar servicios
+docker-compose up -d
+
+# 4. Verificar estado
+docker-compose ps
+
+# 5. Ver logs
+docker-compose logs -f
+
+# 6. Detener servicios
+docker-compose down
+```
+
+### URLs con Docker
+- **Frontend Web:** http://localhost
+- **Backend API:** http://localhost:8000
+- **API Docs:** http://localhost:8000/docs
+
+### Documentación Completa de Docker
+- 📖 **Guía completa:** [DOCKER.md](DOCKER.md)
+- 🚀 **Inicio rápido:** [README.docker.md](README.docker.md)
+- 📦 **Resumen setup:** [DOCKER-SETUP.md](DOCKER-SETUP.md)
+
+---
+
 ## Notas Importantes
 
 - **El backend debe estar corriendo** antes de iniciar los frontends
 - Las variables de entorno en Expo deben empezar con `EXPO_PUBLIC_`
 - En producción, asegúrate de cambiar el CORS para permitir solo orígenes específicos
 - Nunca subas archivos `.env` al repositorio (ya están en `.gitignore`)
+- **Con Docker, todo el proceso de instalación y configuración es automático** ✨
