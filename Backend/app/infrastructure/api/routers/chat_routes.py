@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
-from models import ChatRequest, ChatResponse
-from services import ChatService, ProviderFactory, AIProvider
+from app.domain.models import ChatRequest, ChatResponse
+from app.application.chat_service import ChatService
+from app.infrastructure.adapters.factory import ProviderFactory
+from app.application.ports import AIProvider
 
 router = APIRouter(tags=["Chat"])
 
@@ -15,25 +17,26 @@ async def chat_endpoint(
     request: ChatRequest, 
     service: ChatService = Depends(get_chat_service)
 ):
+    if request.conversation_id is None:
+        raise HTTPException(status_code=400, detail="conversation_id es requerido")
+
     try:
         reply = await service.process_chat(
-            request.conversation_id,
-            request.message
+            conversation_id=request.conversation_id,
+            user_message=request.message
         )
+        
         return ChatResponse(
             response=reply,
             conversation_id=request.conversation_id
         )
+        
     except ValueError as e:
-        # Errores de validación o configuración (API key, etc.)
         error_message = str(e)
         print(f"❌ Error de validación: {error_message}")
-        raise HTTPException(
-            status_code=400, 
-            detail=error_message
-        )
+        raise HTTPException(status_code=400, detail=error_message)
+        
     except Exception as e:
-        # Otros errores inesperados
         error_message = str(e)
         print(f"❌ Error inesperado en chat_endpoint: {error_message}")
         raise HTTPException(
