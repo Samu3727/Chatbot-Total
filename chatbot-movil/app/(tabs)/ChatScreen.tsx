@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.9:8000';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.230.104.192:8000';
 
 interface Message {
   id: string;

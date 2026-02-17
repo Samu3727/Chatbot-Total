@@ -70,7 +70,7 @@
    - **Para Dispositivo Físico:**
      Usa tu IP local (ejecuta `ipconfig` en Windows o `ifconfig` en Mac/Linux):
      ```
-     EXPO_PUBLIC_API_URL=http://192.168.1.XXX:8000
+     EXPO_PUBLIC_API_URL=http://10.230.104.192:8081
      ```
 
 3. **Instalar dependencias e iniciar:**

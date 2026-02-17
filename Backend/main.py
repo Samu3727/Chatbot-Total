@@ -16,7 +16,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",  # Frontend Web
         "http://localhost:8081",  # Expo Metro
-        "http://192.168.*.*:8081",  # Expo en red local
+        "http://10.230.104.192:8081",  # Expo en red local
         "*"  # Permitir todos los orígenes en desarrollo
     ],
     allow_credentials=True,

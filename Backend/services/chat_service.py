@@ -3,7 +3,7 @@ from datetime import datetime
 
 class ChatService:
     def __init__(self, provider: AIProvider):
-        self.provider = provider
+        self.provider = provider,
         self.conversations = {}
 
     async def process_chat(self, conversation_id: str, user_message: str) -> str:
