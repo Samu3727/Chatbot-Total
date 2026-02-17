@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.230.104.192:8000';
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.189.249.192:8000';
 
 interface Message {
   id: string;
@@ -48,10 +48,10 @@ export default function ChatScreen() {
         `${API_URL}/api/v1/chat`,
         {
           message: messageToSend,
-          user_id: 'user123',
+          conversation_id: 'user123',
         },  
         {
-          timeout: 10000,
+          timeout: 80000,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -101,12 +101,17 @@ export default function ChatScreen() {
     </View>
   );
 
+  const Container = Platform.OS === 'web' ? View : KeyboardAvoidingView;
+  const containerProps = Platform.OS === 'web' 
+    ? { style: styles.container }
+    : {
+        style: styles.container,
+        behavior: Platform.OS === 'ios' ? 'padding' as const : 'height' as const,
+        keyboardVerticalOffset: Platform.OS === 'ios' ? 90 : 0,
+      };
+
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-    >
+    <Container {...containerProps}>
       <FlatList
         data={messages}
         renderItem={renderMessage}
@@ -136,7 +141,7 @@ export default function ChatScreen() {
           </Text>
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </Container>
   );
 }
 

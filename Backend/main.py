@@ -16,7 +16,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",  # Frontend Web
         "http://localhost:8081",  # Expo Metro
-        "http://10.230.104.192:8081",  # Expo en red local
+        "http://10.189.249.192:8081",  # Expo en red local
         "*"  # Permitir todos los orígenes en desarrollo
     ],
     allow_credentials=True,
@@ -33,4 +33,5 @@ app.include_router(chat_router, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn
+    # Usar 0.0.0.0 para permitir conexiones desde la red local y emuladores
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

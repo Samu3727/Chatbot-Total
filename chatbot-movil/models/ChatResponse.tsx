@@ -3,6 +3,6 @@
  */
 export interface ChatResponse {
   response: string;
-  success: boolean;
-  error?: string;
+  status: string;
+  conversation_id: string;
 }

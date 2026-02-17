@@ -66,12 +66,24 @@
      ```
      EXPO_PUBLIC_API_URL=http://10.0.2.2:8000
      ```
+     **O usa adb reverse** (recomendado):
+     ```bash
+     # Ejecuta después de iniciar el emulador
+     .\setup-android-port.bat
+     ```
+     Luego usa:
+     ```
+     EXPO_PUBLIC_API_URL=http://localhost:8000
+     ```
    
    - **Para Dispositivo Físico:**
      Usa tu IP local (ejecuta `ipconfig` en Windows o `ifconfig` en Mac/Linux):
      ```
-     EXPO_PUBLIC_API_URL=http://10.230.104.192:8081
+     EXPO_PUBLIC_API_URL=http://10.189.249.192:8000
      ```
+     **IMPORTANTE:** Debes configurar el firewall para permitir conexiones:
+     - Ejecuta como administrador: `add-firewall-rule.bat`
+     - Asegúrate de estar en la misma red WiFi
 
 3. **Instalar dependencias e iniciar:**
    ```bash
@@ -104,25 +116,42 @@ Todos los endpoints están bajo el prefijo `/api/v1`:
   ```json
   {
     "message": "Tu mensaje aquí",
-    "conversation_id": "opcional"
+    "conversation_id": "user123"
+  }
+  ```
+  **Respuesta:**
+  ```json
+  {
+    "response": "Respuesta del chatbot",
+    "status": "success",
+    "conversation_id": "user123"
   }
   ```
 
 ## Solución de Problemas
 
-### Error de CORS
-Si ves errores de CORS en la consola:
-- Verifica que el backend esté corriendo
-- El CORS ya está configurado para permitir todos los orígenes en desarrollo
+### Error 400 Bad Request
+- **Causa:** El formato del request no coincide con lo esperado por el backend
+- **Solución:** Verifica que estés enviando `conversation_id` (no `user_id`)
+- El backend espera: `{"message": "...", "conversation_id": "..."}`
 
-### No se puede conectar desde el móvil
-- Asegúrate de que tu computadora y dispositivo móvil están en la misma red WiFi
-- Verifica que el firewall no esté bloqueando el puerto 8000
-- En Windows, puede ser necesario permitir Python en el firewall
+### Network Error en móvil Android
+- **Para emulador:** Usa `setup-android-port.bat` para configurar port forwarding
+- **Para dispositivo físico:**
+  1. Ejecuta `add-firewall-rule.bat` como administrador
+  2. Asegúrate de estar en la misma red WiFi
+  3. Usa tu IP local (ej: `http://10.189.249.192:8000`)
+  4. Reinicia Expo con `--clear`
+- **Ver guía completa:** [SOLUCION-ANDROID-NETWORK.md](SOLUCION-ANDROID-NETWORK.md)
 
 ### Errores de timeout
-- Aumenta el timeout en el servicio de chat si es necesario
-- Verifica que el backend esté respondiendo correctamente
+- La API de OpenRouter puede tardar 20-60 segundos en responder
+- Aumenta el timeout en `ChatScreen.tsx` o `AxiosChatService.tsx` a 60000 ms (60 segundos)
+- Verifica los logs del backend para ver si está procesando la petición
+
+### Props.pointerEvents deprecated warning
+- **Ya resuelto:** `KeyboardAvoidingView` ahora se usa condicionalmente solo en iOS/Android
+- Si persiste, reinicia el servidor de Expo con `--clear`
 
 ## Estructura de URLs
 

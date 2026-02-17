@@ -1,9 +1,17 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { AxiosChatService } from '../AxiosChatService';
 
 // Mock de axios
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+// Mock de isAxiosError
+jest.mock('axios', () => ({
+  ...jest.requireActual('axios'),
+  isAxiosError: jest.fn(),
+}));
+
+const mockedIsAxiosError = isAxiosError as jest.MockedFunction<typeof isAxiosError>;
 
 describe('AxiosChatService', () => {
   let service: AxiosChatService;
@@ -12,14 +20,15 @@ describe('AxiosChatService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     service = new AxiosChatService(mockApiUrl, 5000);
+    mockedIsAxiosError.mockReturnValue(false);
   });
 
   it('debe enviar mensaje exitosamente', async () => {
     const mockResponse = {
       data: {
-        success: true,
+        status: 'success',
         response: 'Respuesta del servidor',
-        timestamp: new Date().toISOString(),
+        conversation_id: 'user123',
       },
     };
 
@@ -29,10 +38,10 @@ describe('AxiosChatService', () => {
 
     expect(result).toBe('Respuesta del servidor');
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      `${mockApiUrl}/chat`,
+      `${mockApiUrl}/api/v1/chat`,
       {
         message: 'Hola',
-        user_id: 'user123',
+        conversation_id: 'user123',
       },
       {
         timeout: 5000,
@@ -43,13 +52,12 @@ describe('AxiosChatService', () => {
     );
   });
 
-  it('debe manejar errores del servidor (success: false)', async () => {
+  it('debe manejar errores del servidor (status: error)', async () => {
     const mockResponse = {
       data: {
-        success: false,
-        error: 'Error del servidor',
+        status: 'error',
         response: '',
-        timestamp: new Date().toISOString(),
+        conversation_id: 'user123',
       },
     };
 
@@ -65,7 +73,12 @@ describe('AxiosChatService', () => {
       isAxiosError: true,
       request: {},
       message: 'Network Error',
+      name: 'AxiosError',
+      config: {},
+      toJSON: () => ({}),
     };
+    
+    mockedIsAxiosError.mockReturnValue(true);
     mockedAxios.post.mockRejectedValue(networkError);
 
     await expect(service.sendMessage('Hola', 'user123')).rejects.toThrow(
@@ -78,7 +91,12 @@ describe('AxiosChatService', () => {
       isAxiosError: true,
       code: 'ECONNABORTED',
       message: 'timeout of 5000ms exceeded',
+      name: 'AxiosError',
+      config: {},
+      toJSON: () => ({}),
     };
+    
+    mockedIsAxiosError.mockReturnValue(true);
     mockedAxios.post.mockRejectedValue(timeoutError);
 
     await expect(service.sendMessage('Hola', 'user123')).rejects.toThrow(
@@ -92,8 +110,17 @@ describe('AxiosChatService', () => {
       response: {
         status: 500,
         data: { detail: 'Error interno del servidor' },
+        statusText: 'Internal Server Error',
+        headers: {},
+        config: {},
       },
+      message: 'Request failed with status code 500',
+      name: 'AxiosError',
+      config: {},
+      toJSON: () => ({}),
     };
+    
+    mockedIsAxiosError.mockReturnValue(true);
     mockedAxios.post.mockRejectedValue(httpError);
 
     await expect(service.sendMessage('Hola', 'user123')).rejects.toThrow(
@@ -111,9 +138,9 @@ describe('AxiosChatService', () => {
     
     const mockResponse = {
       data: {
-        success: true,
+        status: 'success',
         response: 'Test',
-        timestamp: new Date().toISOString(),
+        conversation_id: 'user123',
       },
     };
 
@@ -128,20 +155,19 @@ describe('AxiosChatService', () => {
     consoleLogSpy.mockRestore();
   });
 
-  it('debe manejar respuesta sin mensaje de error', async () => {
+  it('debe manejar respuesta con status diferente de success', async () => {
     const mockResponse = {
       data: {
-        success: false,
-        error: null,
+        status: 'failed',
         response: '',
-        timestamp: new Date().toISOString(),
+        conversation_id: 'user123',
       },
     };
 
     mockedAxios.post.mockResolvedValue(mockResponse);
 
     await expect(service.sendMessage('Hola', 'user123')).rejects.toThrow(
-      'Error desconocido del servidor'
+      'Error del servidor'
     );
   });
 });

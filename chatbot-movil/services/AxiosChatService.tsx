@@ -1,9 +1,9 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, isAxiosError } from 'axios';
 import { IChatService } from './IChatService';
 import { ChatResponse } from '../models';
 
 // Obtener la URL del API desde las variables de entorno
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.189.249.192:8000';
 
 /**
  * Implementación del servicio de chat usando Axios.
@@ -26,7 +26,7 @@ export class AxiosChatService implements IChatService {
     this.timeout = timeout;
   }
 
-  async sendMessage(message: string, userId: string = 'user123'): Promise<string> {
+  async sendMessage(message: string, conversationId: string = 'user123'): Promise<string> {
     try {
       console.log(`[AxiosChatService] Enviando mensaje a: ${this.apiUrl}/api/v1/chat`);
       console.log(`[AxiosChatService] Mensaje: ${message}`);
@@ -35,7 +35,7 @@ export class AxiosChatService implements IChatService {
         `${this.apiUrl}/api/v1/chat`,
         {
           message,
-          user_id: userId,
+          conversation_id: conversationId,
         },
         {
           timeout: this.timeout,
@@ -47,15 +47,15 @@ export class AxiosChatService implements IChatService {
 
       console.log('[AxiosChatService] Respuesta recibida:', response.data);
 
-      if (!response.data.success) {
-        throw new Error(response.data.error || 'Error desconocido del servidor');
+      if (response.data.status !== 'success') {
+        throw new Error('Error del servidor');
       }
 
       return response.data.response;
     } catch (error) {
       console.error('[AxiosChatService] Error:', error);
 
-      if (axios.isAxiosError(error)) {
+      if (isAxiosError(error)) {
         const axiosError = error as AxiosError;
         
         // Error de respuesta HTTP (4xx, 5xx)
