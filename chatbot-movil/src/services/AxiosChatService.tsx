@@ -2,24 +2,20 @@ import axios, { isAxiosError } from 'axios';
 import { IChatService } from './IChatService';
 import { ChatResponse } from '../models';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.189.249.192:8000';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export class AxiosChatService implements IChatService {
   private readonly apiUrl: string;
   private readonly timeout: number;
 
   constructor(
-    apiUrl: string = API_BASE_URL,
+    apiUrl: string = API_BASE_URL || '',
     timeout: number = 30000
   ) {
     this.apiUrl = apiUrl.trim().replace(/\/$/, '');
     this.timeout = timeout;
   }
 
-  /**
-   * ✅ Corregido: Eliminamos el valor por defecto 'user123'.
-   * Ahora el compilador te obligará a pasar un ID real desde el Hook.
-   */
   async sendMessage(message: string, conversationId: string): Promise<ChatResponse> {
     try {
       const endpoint = `${this.apiUrl}/api/v1/chat/`; 
@@ -28,7 +24,7 @@ export class AxiosChatService implements IChatService {
         endpoint,
         {
           message: message.trim(),
-          conversation_id: conversationId, // 👈 Se usa el ID que viene del Hook
+          conversation_id: conversationId,
         },
         {
           timeout: this.timeout,
