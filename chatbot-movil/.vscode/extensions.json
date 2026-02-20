@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "expo.vscode-expo-tools",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "dsznajder.es7-react-js-snippets",
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "bradlc.vscode-tailwindcss"
+    ]
+}

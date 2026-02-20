@@ -1,24 +1,29 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
+# --- General ---
 node_modules
 dist
 dist-ssr
+.DS_Store
+
+# --- Environment / Secrets ---
+.env
+.env.*
+!.env.example # Es buena práctica subir el ejemplo sin valores reales
 *.local
 
-# Editor directories and files
+# --- TypeScript ---
+*.tsbuildinfo
+
+# --- Testing & Coverage ---
+coverage/
+*.lcov
+.nyc_output/
+
+# --- Expo (Si aplica) ---
+.expo/
+web-build/
+
+# --- Editors ---
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?

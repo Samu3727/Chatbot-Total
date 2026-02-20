@@ -1,41 +1,39 @@
-# Dockerfile optimizado para PRODUCCIÓN
+# 1. Usar una imagen base oficial y ligera
 FROM python:3.11-slim
 
-# Variables de entorno para optimización
+# 2. Configuración de Python para evitar archivos .pyc y asegurar logs en tiempo real
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PYTHONPATH=/app
 
-# Instalar dependencias del sistema
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Crear usuario no-root
-RUN useradd -m -u 1000 appuser && \
-    mkdir -p /app && \
-    chown -R appuser:appuser /app
-
-# Establecer directorio de trabajo
+# 3. Directorio de trabajo
 WORKDIR /app
 
-# Copiar requirements y instalar dependencias como root
-COPY requirements.txt .
+# 4. Capa de Sistema: Dependencias, Usuario y Limpieza
+# Agrupamos para reducir el tamaño de la imagen final
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && useradd -m -u 1000 appuser \
+    && chown -R appuser:appuser /app \
+    && rm -rf /var/lib/apt/lists/*
+
+# 5. Capa de Dependencias Python: Aprovechamos el sistema de capas de Docker
+# Si requirements.txt no cambia, Docker no reinstalará nada
+COPY --chown=appuser:appuser requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el código de la aplicación
+# 6. Capa de Código Fuente: Copiamos el código después de instalar dependencias para aprovechar el cache de Docker
 COPY --chown=appuser:appuser . .
 
-# Cambiar a usuario no-root
+# 7. Seguridad: Ejecutar como usuario no privilegiado
 USER appuser
 
-# Exponer el puerto
+# 8. Documentación del puerto
 EXPOSE 8000
 
-# Health check
+# 9. Healthcheck: Monitoreo de salud del servicio
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:8000/api/v1/health || exit 1
 
-# Comando para ejecutar (SIN --reload en producción)
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+# 10. Punto de entrada: Ejecución a través del script unificado
+CMD ["python", "run.py"]
