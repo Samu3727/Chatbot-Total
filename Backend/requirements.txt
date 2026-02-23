@@ -3,3 +3,5 @@ uvicorn
 httpx
 python-dotenv
 pydantic-settings
+langchain>=0.3.0
+langchain-openai>=0.0.8
