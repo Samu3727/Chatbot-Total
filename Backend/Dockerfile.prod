@@ -19,12 +19,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # 5. Capa de Dependencias Python
 # --chmod=0444 asegura que el archivo sea de solo lectura (r--r--r--)
 COPY --chown=appuser:appuser --chmod=0444 requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    && chmod 0444 requirements.txt
 
 # 6. Capa de Código Fuente
 # --chmod=0555 otorga lectura y ejecución, pero NO escritura (r-xr-xr-x)
 # Esto satisface el Security Hotspot de SonarCloud.
 COPY --chown=appuser:appuser --chmod=0555 . .
+RUN chmod -R 0555 /app
 
 # Refuerzo de permisos para evitar escritura en archivos
 RUN chmod -R a-w /app
