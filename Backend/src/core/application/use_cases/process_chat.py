@@ -22,7 +22,7 @@ class ChatService:
         system_message = {
             "role": "system", 
             "content": (
-                f"Eres un asistente amigable de Davivienda. "
+                f"Eres un asistente amigable."
                 f"Fecha actual: {fecha_formateada}. "
                 f"Hora actual: {hora_formateada}. "
                 "Debes usar el historial previo para responder, responde con mensajes cortos."
