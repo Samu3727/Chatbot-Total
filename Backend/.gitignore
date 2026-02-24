@@ -19,3 +19,13 @@ ENV/
 
 # Logs
 *.log
+
+# Pruebas y Coverage
+.coverage
+htmlcov/
+tox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/

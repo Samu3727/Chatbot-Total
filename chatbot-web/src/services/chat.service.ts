@@ -1,8 +1,8 @@
 import { http } from "../apis/http";
 
-interface MessageUser {
-    conversation_id: string,
-    message: string
+interface ChatApiRequest {
+    conversation_id: string;
+    message: string;
 }
 
 interface ChatApiResponse {
@@ -10,8 +10,7 @@ interface ChatApiResponse {
     status: string;
 }
 
-export const sendQuestion = async (message: MessageUser) => {
-    const {data} = await http.post<ChatApiResponse>("/api/v1/chat", message)
-
+export const sendQuestion = async (payload: ChatApiRequest): Promise<ChatApiResponse> => {
+    const { data } = await http.post<ChatApiResponse>("/api/v1/chat/", payload);
     return data;
 }

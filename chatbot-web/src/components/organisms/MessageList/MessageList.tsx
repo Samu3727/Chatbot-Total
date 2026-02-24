@@ -1,11 +1,6 @@
-import MessageBubble, { type Sender } from "../../molecules/MessageBubble/MessageBubble";
+import MessageBubble from "../../molecules/MessageBubble/MessageBubble";
+import { Message } from "../../../models/message"; // 👈 Importado desde models
 import styles from "./messageList.module.css";
-
-export interface Message {
-    id: string,
-    text: string,
-    sender: Sender
-}
 
 interface PropsMessageList {
     messages: Message[];
@@ -14,15 +9,17 @@ interface PropsMessageList {
 const MessageList = ({ messages }: PropsMessageList) => {
     return (
         <section className={styles.list}>
-            {messages.map(message => (
+            {messages.map((message) => (
                 <MessageBubble
-                    key={message.id}
+                    // Si el ID es único (UUID), no necesitas el index. 
+                    // SonarQube prefiere IDs puros para evitar re-renders innecesarios.
+                    key={message.id} 
                     text={message.text}
                     sender={message.sender}
                 />
             ))}
         </section>
-    )
+    );
 }
 
-export default MessageList
+export default MessageList;

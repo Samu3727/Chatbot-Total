@@ -1,24 +1,26 @@
 {
   "compilerOptions": {
+    "composite": true, 
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "target": "ES2023",
-    "lib": ["ES2023"],
+    "target": "ES2022",
+    "lib": ["ES2022"],
     "module": "ESNext",
     "types": ["node"],
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
-    "noEmit": true,
+    
+    "noEmit": false, /* 👈 OBLIGATORIO: Debe ser false para que 'composite' funcione */
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
