@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "npx vite",
+    "build": "tsc -b && npx vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "npx vite preview",
     "test": "vitest",
     "test:coverage": "vitest run --coverage"
   },
@@ -23,7 +23,7 @@
     "react-native-web": "~0.19.10"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
+    "@eslint/js": "^9.0.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^24.10.1",
@@ -31,7 +31,7 @@
     "@types/react-dom": "~18.2.25",
     "@vitejs/plugin-react": "^5.1.1",
     "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^10.0.0",
+    "eslint": "^9.39.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
@@ -40,6 +40,11 @@
     "typescript-eslint": "^8.46.4",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"
-  }
-
+  },
+  "description": "Aplicación web del chatbot que se conecta al backend FastAPI con OpenRouter.",
+  "main": "eslint.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
 }

@@ -15,7 +15,7 @@ const ChatPage = () => {
     if (!message.trim()) return;
 
     const userMessage: Message = {
-      id: usuario_id,
+      id: crypto.randomUUID(),
       text: message,
       sender: 'user'
     };
@@ -25,7 +25,7 @@ const ChatPage = () => {
 
     try {
       const response = await sendQuestion({
-        conversation_id: userMessage.id,
+        conversation_id: usuario_id,
         message: userMessage.text
       });
 
