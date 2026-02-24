@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from routes.chat_routes import router as chat_router
-from routes.health_routes import router as health_router
+from src.infrastructure.api.v1.routes.chat_routes import router as chat_router
+from src.infrastructure.api.v1.routes.health_routes import router as health_router
 from fastapi.middleware.cors import CORSMiddleware
-from config import settings
 
 app = FastAPI(
     title="OpenRouter Chatbot API",

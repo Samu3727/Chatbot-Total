@@ -26,6 +26,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Esto satisface el Security Hotspot de SonarCloud.
 COPY --chown=appuser:appuser --chmod=0555 . .
 
+# Refuerzo de permisos para evitar escritura en archivos
+RUN chmod -R a-w /app
+
 # 7. Seguridad: Ejecutar como usuario no privilegiado
 USER appuser
 
