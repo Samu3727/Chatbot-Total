@@ -1,7 +1,7 @@
 # 1. Usar una imagen base oficial y ligera
 FROM python:3.11-slim
 
-# 2. Configuración de Python para evitar archivos .pyc y asegurar logs en tiempo real
+# 2. Configuración de Python
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/app
@@ -10,20 +10,21 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app
 
 # 4. Capa de Sistema: Dependencias, Usuario y Limpieza
-# Agrupamos para reducir el tamaño de la imagen final
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && useradd -m -u 1000 appuser \
     && chown -R appuser:appuser /app \
     && rm -rf /var/lib/apt/lists/*
 
-# 5. Capa de Dependencias Python: Aprovechamos el sistema de capas de Docker
-# Si requirements.txt no cambia, Docker no reinstalará nada
-COPY --chown=appuser:appuser requirements.txt .
+# 5. Capa de Dependencias Python
+# --chmod=0444 asegura que el archivo sea de solo lectura (r--r--r--)
+COPY --chown=appuser:appuser --chmod=0444 requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 6. Capa de Código Fuente: Copiamos el código después de instalar dependencias para aprovechar el cache de Docker
-COPY --chown=appuser:appuser . .
+# 6. Capa de Código Fuente
+# --chmod=0555 otorga lectura y ejecución, pero NO escritura (r-xr-xr-x)
+# Esto satisface el Security Hotspot de SonarCloud.
+COPY --chown=appuser:appuser --chmod=0555 . .
 
 # 7. Seguridad: Ejecutar como usuario no privilegiado
 USER appuser
@@ -31,9 +32,9 @@ USER appuser
 # 8. Documentación del puerto
 EXPOSE 8000
 
-# 9. Healthcheck: Monitoreo de salud del servicio
+# 9. Healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8000/api/v1/health || exit 1
 
-# 10. Punto de entrada: Ejecución a través del script unificado
+# 10. Punto de entrada
 CMD ["python", "run.py"]
